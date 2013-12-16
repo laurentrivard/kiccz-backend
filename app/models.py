@@ -23,9 +23,9 @@ class Releases(db.Model):
 	resell_value = db.Column(db.Integer)
 	color1 = db.Column(db.String(64))
 	color2 = db.Column(db.String(64))
-	text = db.Column(db.String(256))
+	text = db.Column(db.String(512))
 	date_added = db.Column(db.DateTime)
-	release_folder = db.Column(db.String)
+	release_folder = db.Column(db.String(512))
 	pictures = db.relationship('ReleasePictures', backref= 'release', lazy = 'dynamic')
 	votes = db.relationship('Votes', backref='votes', lazy='dynamic')
 
@@ -37,6 +37,6 @@ class Votes(db.Model):
 
 class ReleasePictures(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
-	url = db.Column(db.String)
+	url = db.Column(db.String(512))
 	release_id = db.Column(db.Integer, db.ForeignKey('releases.id'))
 
