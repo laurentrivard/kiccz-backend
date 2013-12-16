@@ -104,7 +104,7 @@ def add_release():
 		model = addReleaseForm.model.data
 		date = addReleaseForm.release_date.data
 		#create a subfolder to uplaod pictures of the specifc release
-		release_folder = brand.replace(" ", "_") + "_" + model.replace(" ", "_") + "_" + datetime.datetime.now().strftime("%Y-%m-%d")
+		release_folder = 'releases/' + brand.replace(" ", "_") + "_" + model.replace(" ", "_") + "_" + datetime.datetime.now().strftime("%Y-%m-%d")
 		path = os.path.join(UPLOAD_FOLDER, release_folder)
 		mkdir_p(path)
 		print UPLOAD_FOLDER
@@ -128,6 +128,7 @@ def add_release():
 				filename = secure_filename(pic.filename)
 				url = os.path.join(path, filename)
 				pic.save(url)
+				url = os.path.join(release_folder, filename)
 				picture = ReleasePictures(url = url,
 										release_id = release_id.id)
 				db.session.add(picture)

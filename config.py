@@ -17,5 +17,5 @@ BRANDS = [('Air Jordan', 'Air Jordan'), ('Ascics', 'Ascics'), ('New Balance', 'N
 		  ('Patrick Ewings', 'Patrick Ewings'), ('Ronnie Releases', 'Ronnie Releases'), ('Sacony', 'Sacony')]
 
 #image upload
-UPLOAD_FOLDER = 'app/static/releases'
+UPLOAD_FOLDER = 'app/static'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'gif', 'jpeg'])

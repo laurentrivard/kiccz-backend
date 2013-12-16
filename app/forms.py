@@ -14,4 +14,4 @@ class AddReleaseForm(Form):
 	color1 = TextField('color1', validators=[Required()])
 	color2 = TextField('color2', validators=[Required()])
 	text = TextAreaField('text')
-	#three images are added separately
+	#images are added separately

@@ -2,10 +2,8 @@
 {% block content %}
 {% for release in releases %}
 	<p> {{release.brand}} ----> {{release.model}} --> ${{release.price}} <br>
-		{{release.picture1}}</p>
 		{% for img in release.pictures.all() %}
-		<img src="../static/releases/hello.jpg" height="70" width="100">
-		{{static_url}}
+		<img src="{{url_for('static', filename= img.url)}}" height="70" width="100">
 		{% endfor %}
 
 {% endfor%}
