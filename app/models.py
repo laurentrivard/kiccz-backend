@@ -23,7 +23,7 @@ class Releases(db.Model):
 	resell_value = db.Column(db.Integer)
 	color1 = db.Column(db.String(64))
 	color2 = db.Column(db.String(64))
-	text = db.Column(db.String)
+	text = db.Column(db.String(256))
 	date_added = db.Column(db.DateTime)
 	release_folder = db.Column(db.String)
 	pictures = db.relationship('ReleasePictures', backref= 'release', lazy = 'dynamic')
