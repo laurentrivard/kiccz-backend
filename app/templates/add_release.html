@@ -1,0 +1,31 @@
+
+{% extends "base.html" %}
+{% block content %}
+
+<form action="" method="post" name="addRelease" enctype="multipart/form-data">
+	{{form.hidden_tag()}}
+	<table>
+		
+			Brand: {{form.brand}} <br>
+			 Model: {{form.model}}  <br>
+			 Release date: {{form.release_date(placeholder="12/25/1991")}} <br>
+			 Price: ${{form.price}} <br>
+			 Projected Resell Value: ${{form.resell_value}}  <br>
+			 Primary Color: {{form.color1}} <br>
+			 Secondary Color: {{form.color2}} <br>
+			 Description: {{form.text}} <br> 
+			 <div id="add_pictures">
+			 	<div class="add_pic">Picture 1: <input type="file" name="picture"> <br></div>
+			 	<div class="add_pic">Picture 2: <input type="file" name="picture"> <br></div>
+			 	<div class="add_pic">Picture 3: <input type="file" name="picture"> <br></div>
+			 	<div class="add_pic">Picture 4: <input type="file" name="picture"> <br></div>
+			 	<div class="add_pic">Picture 5: <input type="file" name="picture"> <br></div>
+			 	<div class="add_pic">Picture 6: <input type="file" name="picture"> <br></div>
+			 </div>
+			 <!-- <button type="button" id="add_pic_button"> Add Picture </button> -->
+
+			<input type="submit" value="Add Release Date"> 
+	</table>
+</form>	
+
+{% endblock %}
