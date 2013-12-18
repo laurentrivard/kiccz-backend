@@ -1,6 +1,6 @@
 from flask import render_template, request, flash, redirect, url_for, jsonify
 from app import app, db
-from models import User, Releases, Votes, ReleasePictures
+from models import User, Releases, Votes, ReleasePictures, ROLE_USER
 from forms import AddReleaseForm
 from config import UPLOAD_FOLDER, ALLOWED_EXTENSIONS
 from werkzeug import secure_filename
@@ -91,7 +91,7 @@ def vote():
 		exists.vote = vote 
 	#commits the change	
 	db.session.commit()	
-	resp = jsonify({})
+	resp = jsonify({"hello": "hello"})
 	resp.status_code = 200
 	return resp	
 
@@ -141,3 +141,55 @@ def add_release():
 		print addReleaseForm.errors	
 	return render_template('add_release.html',
 		form = addReleaseForm)	
+
+@app.route('/m_create_account', methods = ['GET', 'POST'])
+def m_create_account():
+	user_id = request.form['user_id']
+	name = request.form['name']
+	handle = request.form['handle']
+	user = User.query.filter_by(facebook_id = user_id).first()
+	handle_already_used = User.query.filter_by(handle = handle).first()
+	#handle already used, return error
+	if handle_already_used != None:
+		resp = jsonify({"error": "The handle you chose already exists. Please choose a different one."})
+		resp.status_code = 200
+		return resp
+
+	if user == None:
+		user = User(facebook_id = user_id,
+					name = name,
+					handle = handle,
+					role = ROLE_USER
+					)
+		db.session.add(user)
+		db.session.commit()
+	else:
+		m_login()	
+
+	return_user = User.query.filter_by(facebook_id = user_id).first()
+	new_user = {}
+	new_user['user_id'] = return_user.id
+	new_user['handle'] = return_user.handle
+	new_user['name'] = return_user.name
+
+	resp = jsonify(new_user)
+	resp.status_code = 200
+	return resp	
+
+@app.route('/m_login', methods = ['GET', 'POST'])
+def m_login():
+	user_id = request.form['user_id']
+	user = User.query.filter_by(facebook_id = user_id).first()
+	if user == None:
+		resp = jsonify({"account_exists": "no"})
+		resp.status_code = 200
+		return resp
+	else:
+	   #login the user and return his info
+	   new_user = {}
+	   new_user['user_id'] = user.id
+	   new_user['handle'] = user.handle
+	   new_user['name'] = user.name
+	   resp = jsonify(new_user)
+	   resp.status_code = 200
+	   return resp	
