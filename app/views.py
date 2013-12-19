@@ -94,6 +94,29 @@ def vote():
 	resp = jsonify({"hello": "hello"})
 	resp.status_code = 200
 	return resp	
+@app.route('/m_add_release', methods = ["GET", "POST"])
+def m_add_release():
+	brand = request.form['brand']
+	model = request.form['model']
+	date = request.form['release_date']
+	release_folder = 'releases/' + brand.replace(" ", "_") + "_" + model.replace(" ", "_") + "_" + datetime.datetime.now().strftime("%Y-%m-%d")
+	path = os.path.join(UPLOAD_FOLDER, release_folder)
+	mkdir_p(path)
+	print UPLOAD_FOLDER
+	newRelease = Releases(brand = brand,
+					model = model,
+					release_date = date,
+					price = request.form['price'],
+					resell_value = request.form['resell_value'],
+					color1 = request.form['color1'],
+					color2 = request.form['color2'],
+					release_folder = release_folder,
+					text = request.form['text'],
+					date_added = datetime.datetime.now())
+
+	resp = jsonify({"error": "maybe"})
+	resp.status_code = 200
+	return resp
 
 @app.route('/add_release', methods = ['GET', 'POST'])
 def add_release():
@@ -154,23 +177,23 @@ def m_create_account():
 		resp = jsonify({"error": "The handle you chose already exists. Please choose a different one."})
 		resp.status_code = 200
 		return resp
-
+	#create new user
 	if user == None:
 		user = User(facebook_id = user_id,
 					name = name,
 					handle = handle,
-					role = ROLE_USER
-					)
+					role = ROLE_USER)
 		db.session.add(user)
 		db.session.commit()
 	else:
-		m_login()	
+		m_login()	#should never be called
 
 	return_user = User.query.filter_by(facebook_id = user_id).first()
 	new_user = {}
 	new_user['user_id'] = return_user.id
 	new_user['handle'] = return_user.handle
 	new_user['name'] = return_user.name
+	new_user['role'] = return_user.role
 
 	resp = jsonify(new_user)
 	resp.status_code = 200
@@ -190,6 +213,7 @@ def m_login():
 	   new_user['user_id'] = user.id
 	   new_user['handle'] = user.handle
 	   new_user['name'] = user.name
+	   new_user['role'] = user.role
 	   resp = jsonify(new_user)
 	   resp.status_code = 200
 	   return resp	
