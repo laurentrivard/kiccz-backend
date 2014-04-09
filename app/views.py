@@ -1,6 +1,6 @@
 from flask import render_template, request, flash, redirect, url_for, jsonify
 from app import app, db
-from models import User, Releases, Votes, ReleasePictures, ROLE_USER
+from models import User, Releases, Posts, Votes, ReleasePictures, ROLE_USER
 from forms import AddReleaseForm
 from config import UPLOAD_FOLDER, ALLOWED_EXTENSIONS
 from werkzeug import secure_filename
@@ -19,6 +19,7 @@ def get_releases():
 	releases = Releases.query.all()
 	return render_template("releases.html",
 		releases = releases)
+
 
 def returnJsonReleaseInfo():
 	jsondic = {}
@@ -53,13 +54,45 @@ def returnJsonReleaseInfo():
 		jsondic["releases"].append(rel)
 	resp = jsonify(jsondic)
 	resp.status_code = 200
-	return resp	
+	return resp
 
+def populate_test_posts():
+	for i in range(0,6):
+		newPost = Posts(id = i, 
+			post_date=datetime.datetime.now(), 
+			description='test description',
+			user_id = request.form['user_id'])
+		db.session.add(newPost)
+
+def returnJsonPostInfo():
+	jsondic = {}
+	posts = Posts.query.all()
+	print posts[0]
+	jsondic["posts"] = []
+	for p in posts:
+		pos = {}
+		pos['user_id'] = p.user_id
+		pos['description'] = p.description
+		pos['post_date'] = str(p.post_date)
+		pics = []
+		#for i in p.pictures.all():
+		#	pics.append(i.url)
+		#pos['pictures'] = pics
+		jsondic["posts"].append(pos)
+	resp = jsonify(jsondic)
+	resp.status_code = 200
+	return resp	
 
 @app.route('/m_releases')
 def get_m_releases():
 	data = returnJsonReleaseInfo()
 	return data	
+
+@app.route('/home')
+def get_posts():
+	data = returnJsonPostInfo()
+	return data
+
 #helper to check if uploaded file should be accepted
 def allowed_file(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
@@ -105,7 +138,7 @@ def m_add_release():
 	print UPLOAD_FOLDER
 	newRelease = Releases(brand = brand,
 					model = model,
-					release_date = date,
+					#release_date = date,
 					price = request.form['price'],
 					resell_value = request.form['resell_value'],
 					color1 = request.form['color1'],
@@ -113,6 +146,12 @@ def m_add_release():
 					release_folder = release_folder,
 					text = request.form['text'],
 					date_added = datetime.datetime.now())
+	db.session.add(newRelease)
+	# db.session.commit()
+	#release_id = Releases.query.order_by(Releases.id.desc()).first()
+	#print request.files[]
+	#print request.form
+
 
 	resp = jsonify({"error": "maybe"})
 	resp.status_code = 200
@@ -197,7 +236,9 @@ def m_create_account():
 
 	resp = jsonify(new_user)
 	resp.status_code = 200
-	return resp	
+	return resp
+
+@app.route('/home', methods = ['GET', 'POST'])	
 
 @app.route('/m_login', methods = ['GET', 'POST'])
 def m_login():

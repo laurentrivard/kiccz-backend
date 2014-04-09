@@ -1,5 +1,5 @@
 from flask.ext.wtf import Form
-from wtforms import TextField, BooleanField, SelectField, SubmitField, DateField, TextAreaField
+from wtforms.fields import TextField, BooleanField, SelectField, SubmitField, DateField, TextAreaField
 from wtforms.validators import Required
 from config import BRANDS
 from werkzeug import secure_filename

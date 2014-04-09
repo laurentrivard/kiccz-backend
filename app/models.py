@@ -9,6 +9,7 @@ class User(db.Model):
 	name = db.Column(db.String(64))
 	facebook_id = db.Column(db.String(120), index = True, unique = True)
 	role = db.Column(db.SmallInteger, default = ROLE_USER)
+	posts = db.relationship('Posts', backref = 'author', lazy = 'dynamic')
 
 	def __repr__(self):
 		return '<User %r>' % (self.handle)
@@ -29,6 +30,13 @@ class Releases(db.Model):
 	pictures = db.relationship('ReleasePictures', backref= 'release', lazy = 'dynamic')
 	votes = db.relationship('Votes', backref='votes', lazy='dynamic')
 
+class Posts(db.Model):
+	id = db.Column(db.Integer, primary_key = True)
+	post_date = db.Column(db.DateTime)
+	description = db.Column(db.String(512))
+	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+	pictures = db.relationship('PostPictures', backref= 'post', lazy = 'dynamic')
+
 class Votes(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
 	vote = db.Column(db.Boolean)
@@ -39,4 +47,11 @@ class ReleasePictures(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
 	url = db.Column(db.String(512))
 	release_id = db.Column(db.Integer, db.ForeignKey('releases.id'))
+
+class PostPictures(db.Model):
+	id = db.Column(db.Integer, primary_key = True)
+	url = db.Column(db.String(512))
+	post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
+	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
 
