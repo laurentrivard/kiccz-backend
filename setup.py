@@ -18,7 +18,7 @@ subprocess.call([os.path.join('flask', bin, 'pip'), 'install', 'sqlalchemy-migra
 if sys.platform != 'win32':
     subprocess.call([os.path.join('flask', bin, 'pip'), 'install', 'mysql-python'])
 #subprocess.call([os.path.join('flask', bin, 'pip'), 'install', 'flask-whooshalchemy'])
-subprocess.call([os.path.join('flask', bin, 'pip'), 'install', 'git+git://github.com/miguelgrinberg/Flask-WhooshAlchemy'])
+#subprocess.call([os.path.join('flask', bin, 'pip'), 'install', 'git+git://github.com/miguelgrinberg/Flask-WhooshAlchemy'])
 subprocess.call([os.path.join('flask', bin, 'pip'), 'install', 'flask-wtf<0.9.0'])
 subprocess.call([os.path.join('flask', bin, 'pip'), 'install', 'flask-babel'])
 subprocess.call([os.path.join('flask', bin, 'pip'), 'install', 'guess-language'])
