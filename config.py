@@ -1,4 +1,6 @@
 import os
+import psycopg2
+import urlparse
 
 CSRF_ENABLED = True
 SECRET_KEY = 'kiccz_iphone_app_backend'
@@ -9,6 +11,18 @@ if os.environ.get('DATABASE_URL') is None:
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')
 else:
     SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
+    urlparse.uses_netloc.append("postgres")
+    url = urlparse.urlparse(os.environ["DATABASE_URL"])
+    conn = psycopg2.connect(
+    	database=url.path[1:],
+    	user=url.username,
+    	password=url.password,
+    	host=url.hostname,
+    	port=url.port
+	)
+
+
+
 
 SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
 
