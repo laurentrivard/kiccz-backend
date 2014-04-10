@@ -130,25 +130,28 @@ def get_m_releases():
 	data = returnJsonReleaseInfo()
 	return data	
 
-@app.route('/home', methods = ['GET','POST'])
+@app.route('/home', methods = ['GET'])
 def get_posts():
 	posts = Posts.query.all()
 	print posts
-	populate_test_posts()
-	print "successfully"
 
 @app.route('/home2', methods = ['GET'])
 def get_posts2():
 	for i in range(0,6):
-		print "post" + str(i)
-		newPost = Posts( 
-			post_date=datetime.datetime.now(), 
-			description='test description',
-			user_id = '1234',
-			pic_path = "posts/shoe" + str(i) + ".jpg",)
+		newUser= User(handle = 'test' + str(i), name='test' + str(i), 
+				facebook_id = 'test' + str(i), 
+				role=ROLE_USER)
+		db.session.add(newUser)
+
+		newPost = Posts( post_date=datetime.datetime.now(), 
+					description='test description',
+					user_id = '1234',
+					pic_path = "posts/shoe" + str(i) + ".jpg",)
+		db.session.add(newPost)
+
 		newLike = Likes(like = True, post_id = i, user_id = '1234')
 		db.session.add(newLike)
-		db.session.add(newPost)
+		
 	db.session.commit()
 
 
