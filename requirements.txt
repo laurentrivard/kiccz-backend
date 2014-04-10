@@ -3,7 +3,6 @@ Flask==0.10.1
 Flask-SQLAlchemy==1.0
 Flask-WTF==0.9.5
 Jinja2==2.7.1
-MDP==3.3
 MarkupSafe==0.18
 PIL==1.1.7
 Pattern==2.6
