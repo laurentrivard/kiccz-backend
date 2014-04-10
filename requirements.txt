@@ -2,8 +2,8 @@ Flask==0.10.1
 Flask-SQLAlchemy==1.0
 Flask-WTF==0.9.5
 Jinja2==2.7.1
-Sqlalchemy>=0.7.9
-SQLAlchemy-migrate==0.7.2
+Sqlalchemy==0.9.4
+SQLAlchemy-migrate==0.9
 WTForms==1.0.5
 gunicorn==18.0
 psycopg2==2.5.2
