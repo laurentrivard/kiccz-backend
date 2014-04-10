@@ -138,7 +138,7 @@ def get_posts():
 	print "successfully"
 
 @app.route('/home2', methods = ['POST'])
-def get_posts():
+def get_posts2():
 	for i in range(0,6):
 		print "post" + str(i)
 		newPost = Posts( 
