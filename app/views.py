@@ -24,7 +24,6 @@ def get_releases():
 def returnJsonReleaseInfo():
 	jsondic = {}
 	releases = Releases.query.all()
-	print releases[0].id
 	jsondic["releases"] = []
 	for r in releases:
 		rel = {}
@@ -94,7 +93,6 @@ def get_image():
 def returnJsonPostInfo():
 	jsondic = {}
 	posts = Posts.query.all()
-	print posts[0]
 	jsondic["posts"] = []
 	for p in posts:
 		likes = 0
