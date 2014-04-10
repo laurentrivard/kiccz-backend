@@ -1,6 +1,7 @@
 from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
 from config import UPLOAD_FOLDER
+import os
 
 app = Flask(__name__, static_url_path = '/static', static_folder="static")
 app.config.from_object('config')
