@@ -57,6 +57,7 @@ def returnJsonReleaseInfo():
 
 def populate_test_posts():
 	for i in range(0,6):
+		print "post" + str(i)
 		newPost = Posts( 
 			post_date=datetime.datetime.now(), 
 			description='test description',
@@ -66,7 +67,7 @@ def populate_test_posts():
 		newLike = Likes(like = True, post_id = i, user_id = '1234')
 		db.session.add(newLike)
 		db.session.add(newPost)
-		db.session.commit()
+	db.session.commit()
 
 @app.route('/upload_post', methods= ['POST'])
 def get_image():
