@@ -133,6 +133,7 @@ def get_m_releases():
 
 @app.route('/home')
 def get_posts():
+	populate_test_posts()
 	data = returnJsonPostInfo()
 	return data
 
