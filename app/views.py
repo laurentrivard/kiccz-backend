@@ -73,7 +73,7 @@ def populate_test_posts():
 def get_image():
 	user_id = request.form['user_id']
 	description = request.form['description']
-	post_date = datetime.datetime.now().strftime("%Y-%m-%d")
+	post_date = datetime.datetime.now()
 	files = request.files.getlist("image_name")
 	for file in files:
 		filename = secure_filename(file.filename)
@@ -85,6 +85,8 @@ def get_image():
 					user_id = user_id,
 					pic_path = path,)
 	db.session.add(newPost)
+	db.session.commit()
+	resp = jsonify({"whattup": "yo whattup"})
 	resp.status_code = 200
 	return resp
 
