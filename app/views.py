@@ -137,7 +137,7 @@ def get_posts():
 	populate_test_posts()
 	print "successfully"
 
-@app.route('/home2', methods = ['POST'])
+@app.route('/home2', methods = ['GET'])
 def get_posts2():
 	for i in range(0,6):
 		print "post" + str(i)
