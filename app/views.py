@@ -132,8 +132,8 @@ def get_m_releases():
 
 @app.route('/home', methods = ['GET'])
 def get_posts():
-	print "hello"
-	populate_test_posts()
+	posts = Posts.query.all()
+	print posts
 	data = returnJsonPostInfo()
 	return data
 
