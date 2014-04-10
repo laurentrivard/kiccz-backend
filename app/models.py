@@ -35,7 +35,8 @@ class Posts(db.Model):
 	post_date = db.Column(db.DateTime)
 	description = db.Column(db.String(512))
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-	pictures = db.relationship('PostPictures', backref= 'post', lazy = 'dynamic')
+	pic_path = db.Column(db.String(512))
+	likes = db.relationship('Likes', backref = 'likes', lazy='dynamic')
 
 class Votes(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
@@ -43,15 +44,16 @@ class Votes(db.Model):
 	release_id = db.Column(db.Integer, db.ForeignKey('releases.id'))
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
+class Likes(db.Model):
+	id = db.Column(db.Integer, primary_key = True)
+	like = db.Column(db.Boolean)
+	post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
+	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
 class ReleasePictures(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
 	url = db.Column(db.String(512))
 	release_id = db.Column(db.Integer, db.ForeignKey('releases.id'))
 
-class PostPictures(db.Model):
-	id = db.Column(db.Integer, primary_key = True)
-	url = db.Column(db.String(512))
-	post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
-	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 

@@ -1,10 +1,10 @@
 from flask import render_template, request, flash, redirect, url_for, jsonify
 from app import app, db
-from models import User, Releases, Posts, Votes, ReleasePictures, ROLE_USER
+from models import User, Releases, Posts, Votes, ReleasePictures, Likes, ROLE_USER
 from forms import AddReleaseForm
 from config import UPLOAD_FOLDER, ALLOWED_EXTENSIONS
 from werkzeug import secure_filename
-import os, errno, datetime
+import os, errno, datetime, random
 
 @app.route('/')
 @app.route('/index')
@@ -58,11 +58,35 @@ def returnJsonReleaseInfo():
 
 def populate_test_posts():
 	for i in range(0,6):
-		newPost = Posts(id = i, 
+		newPost = Posts( 
 			post_date=datetime.datetime.now(), 
 			description='test description',
-			user_id = request.form['user_id'])
+			user_id = '1234',
+			pic_path = "posts/shoe" + str(i) + ".jpg",
+			)
+		newLike = Likes(like = True, post_id = i, user_id = '1234')
+		db.session.add(newLike)
 		db.session.add(newPost)
+		db.session.commit()
+
+@app.route('/upload_post', methods= 'POST')
+def get_image():
+	user_id = request.form['user_id']
+	description = request.form['description']
+	post_date = datetime.datetime.now().strftime("%Y-%m-%d")
+	files = request.files.getlist("image_name")
+	for file in files:
+		filename = secure_filename(file.filename)
+		file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+	path = os.path.join(UPLOAD_FOLDER, '/posts')
+	mkdir_p(path)
+	newPost = Posts(post_date = post_date,
+					description = description,
+					user_id = user_id,
+					pic_path = path,)
+	db.session.add(newPost)
+	resp.status_code = 200
+	return resp
 
 def returnJsonPostInfo():
 	jsondic = {}
@@ -70,16 +94,32 @@ def returnJsonPostInfo():
 	print posts[0]
 	jsondic["posts"] = []
 	for p in posts:
+		likes = 0
 		pos = {}
 		pos['user_id'] = p.user_id
 		pos['description'] = p.description
 		pos['post_date'] = str(p.post_date)
-		pics = []
-		#for i in p.pictures.all():
-		#	pics.append(i.url)
-		#pos['pictures'] = pics
+		pos['pic_path'] = p.pic_path
+		for l in p.likes.all():
+			likes += 1
+		pos['likes'] = likes
 		jsondic["posts"].append(pos)
 	resp = jsonify(jsondic)
+	resp.status_code = 200
+	return resp	
+
+@app.route('/like_post', methods = ["POST"])
+def like():
+	user_id = request.form['user_id']
+	release_id = request.form['release_id']
+	exists = Likes.query.filter_by(user_id = user_id, release_id = release_id).first()
+	if not exists:	
+		newLike = Likes(like = True,
+					post_id = request.form['post_id'],
+					user_id = request.form['user_id'])
+		db.session.add(newVote) 
+		db.session.commit()	
+	resp = jsonify({"No like error": "Like added successfully"})
 	resp.status_code = 200
 	return resp	
 
@@ -90,6 +130,7 @@ def get_m_releases():
 
 @app.route('/home')
 def get_posts():
+	populate_test_posts()
 	data = returnJsonPostInfo()
 	return data
 
@@ -127,6 +168,7 @@ def vote():
 	resp = jsonify({"hello": "hello"})
 	resp.status_code = 200
 	return resp	
+
 @app.route('/m_add_release', methods = ["GET", "POST"])
 def m_add_release():
 	brand = request.form['brand']
@@ -237,8 +279,6 @@ def m_create_account():
 	resp = jsonify(new_user)
 	resp.status_code = 200
 	return resp
-
-@app.route('/home', methods = ['GET', 'POST'])	
 
 @app.route('/m_login', methods = ['GET', 'POST'])
 def m_login():
