@@ -134,8 +134,8 @@ def get_m_releases():
 def get_posts():
 	posts = Posts.query.all()
 	print posts
-	data = returnJsonPostInfo()
-	return data
+	populate_test_posts()
+	print "successfully"
 
 #helper to check if uploaded file should be accepted
 def allowed_file(filename):
