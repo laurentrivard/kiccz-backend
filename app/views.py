@@ -69,24 +69,25 @@ def populate_test_posts():
 		db.session.add(newPost)
 		db.session.commit()
 
-@app.route('/upload_post', methods= 'POST')
+@app.route('/upload_post', methods= ['POST'])
 def get_image():
 	user_id = request.form['user_id']
 	description = request.form['description']
 	post_date = datetime.datetime.now()
 	files = request.files.getlist("image_name")
+	filename = ''
 	for file in files:
 		filename = secure_filename(file.filename)
-		file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-	path = os.path.join(UPLOAD_FOLDER, '/posts')
-	mkdir_p(path)
+		file.save(os.path.join(app.config['UPLOAD_FOLDER'], 'posts', filename))
+	path = os.path.join(UPLOAD_FOLDER, '/posts', filename)
+	# mkdir_p(path)
 	newPost = Posts(post_date = post_date,
 					description = description,
 					user_id = user_id,
 					pic_path = path,)
 	db.session.add(newPost)
 	db.session.commit()
-	resp = jsonify({"whattup": "yo whattup"})
+	resp = jsonify({})
 	resp.status_code = 200
 	return resp
 
