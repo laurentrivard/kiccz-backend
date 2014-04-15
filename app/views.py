@@ -77,7 +77,7 @@ def get_image():
 	files = request.files.getlist("image_name")
 	filename = ''
 	for file in files:
-		name = "%d_%s" % user_id, datetime.date.today().strftime("%B %d, %Y")
+		name = "%s_%s" % str(user_id), datetime.date.today().strftime("%B %d, %Y")
 		filename = secure_filename(file.filename)
 		file.save(os.path.join(app.config['UPLOAD_FOLDER'], 'posts', filename))
 	path = os.path.join(UPLOAD_FOLDER, '/posts', filename)
