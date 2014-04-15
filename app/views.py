@@ -132,7 +132,10 @@ def get_m_releases():
 
 @app.route('/home', methods = ['GET'])
 def get_posts():
-	posts = Posts.query.all()
+	# posts = Posts.query.all()
+	jsondic = {}
+	resp = jsonify(jsondic)
+	resp.status_code = 200
 	return posts
 
 @app.route('/home2', methods = ['GET'])
