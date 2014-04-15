@@ -77,7 +77,7 @@ def get_image():
 	files = request.files.getlist("image_name")
 	filename = ''
 	for file in files:
-		name = "%s" % str(user_id) + datetime.date.today().strftime("%B %d, %Y")
+		name = "%s" % str(user_id) + "_" + datetime.date.today().strftime("%Y-%m-%d %H:%M:%S")
 		filename = secure_filename(name)
 		file.save(os.path.join(app.config['UPLOAD_FOLDER'], 'posts', filename))
 	path = os.path.join(UPLOAD_FOLDER, '/posts', filename)
@@ -94,7 +94,7 @@ def get_image():
 
 def returnJsonPostInfo():
 	jsondic = {}
-	posts = Posts.query.all()
+	posts = Posts.query.order_by(post_date.desc())
 	jsondic["posts"] = []
 	for p in posts:
 		likes = 0
