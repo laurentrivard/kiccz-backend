@@ -60,7 +60,7 @@ def populate_test_posts():
 	for i in range(0,6):
 		print "post" + str(i)
 		newPost = Posts( 
-			post_date=datetime.datetime.now(), 
+			post_date=datetime.now(), 
 			description='test description',
 			user_id = '13',
 			pic_path = "posts/shoe" + str(i) + ".jpg",
@@ -129,7 +129,7 @@ def like():
 
 @app.route('/m_releases')
 def get_m_releases():
-	populate_test_posts()
+	# populate_test_posts()
 	data = returnJsonReleaseInfo()
 	return data	
 
@@ -147,7 +147,7 @@ def get_posts2():
 				role=ROLE_USER)
 		db.session.add(newUser)
 
-		newPost = Posts( post_date=datetime.datetime.now(), 
+		newPost = Posts( post_date=datetime.now(), 
 					description='test description',
 					user_id = '1234',
 					pic_path = "posts/shoe" + str(i) + ".jpg",)
@@ -199,7 +199,7 @@ def m_add_release():
 	brand = request.form['brand']
 	model = request.form['model']
 	date = request.form['release_date']
-	release_folder = 'releases/' + brand.replace(" ", "_") + "_" + model.replace(" ", "_") + "_" + datetime.datetime.now().strftime("%Y-%m-%d")
+	release_folder = 'releases/' + brand.replace(" ", "_") + "_" + model.replace(" ", "_") + "_" + datetime.now().strftime("%Y-%m-%d")
 	path = os.path.join(UPLOAD_FOLDER, release_folder)
 	mkdir_p(path)
 	print UPLOAD_FOLDER
@@ -212,7 +212,7 @@ def m_add_release():
 					color2 = request.form['color2'],
 					release_folder = release_folder,
 					text = request.form['text'],
-					date_added = datetime.datetime.now())
+					date_added = datetime.now())
 	db.session.add(newRelease)
 	# db.session.commit()
 	#release_id = Releases.query.order_by(Releases.id.desc()).first()
@@ -233,7 +233,7 @@ def add_release():
 		model = addReleaseForm.model.data
 		date = addReleaseForm.release_date.data
 		#create a subfolder to uplaod pictures of the specifc release
-		release_folder = 'releases/' + brand.replace(" ", "_") + "_" + model.replace(" ", "_") + "_" + datetime.datetime.now().strftime("%Y-%m-%d")
+		release_folder = 'releases/' + brand.replace(" ", "_") + "_" + model.replace(" ", "_") + "_" + datetime.now().strftime("%Y-%m-%d")
 		path = os.path.join(UPLOAD_FOLDER, release_folder)
 		mkdir_p(path)
 		print UPLOAD_FOLDER
