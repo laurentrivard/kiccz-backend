@@ -246,7 +246,7 @@ def add_release():
 							color2 = addReleaseForm.color2.data,
 							release_folder = release_folder,
 							text = addReleaseForm.text.data,
-							date_added = datetime.datetime.now())
+							date_added = datetime.now())
 		db.session.add(newRelease)
 		db.session.commit()
 		release_id = Releases.query.order_by(Releases.id.desc()).first()
