@@ -61,7 +61,7 @@ def populate_test_posts():
 		newPost = Posts( 
 			post_date=datetime.datetime.now(), 
 			description='test description',
-			user_id = '1',
+			user_id = '13',
 			pic_path = "posts/shoe" + str(i) + ".jpg",
 			)
 		newLike = Likes(like = True, post_id = i, user_id = '1234')
