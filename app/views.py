@@ -94,7 +94,7 @@ def get_image():
 
 def returnJsonPostInfo():
 	jsondic = {}
-	posts = Posts.query.order_by(post_date.desc())
+	posts = Posts.query.order_by(Posts.post_date.desc())
 	jsondic["posts"] = []
 	for p in posts:
 		likes = 0
