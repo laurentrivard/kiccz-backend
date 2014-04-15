@@ -133,7 +133,7 @@ def get_m_releases():
 @app.route('/home', methods = ['GET'])
 def get_posts():
 	posts = Posts.query.all()
-	print posts
+	return posts
 
 @app.route('/home2', methods = ['GET'])
 def get_posts2():
