@@ -74,7 +74,7 @@ def populate_test_posts():
 def get_image():
 	user_id = request.form['user_id']
 	description = request.form['description']
-	post_date = datetime.datetime.now()
+	post_date = datetime.now()
 	files = request.files.getlist("image_name")
 	filename = ''
 	for file in files:
