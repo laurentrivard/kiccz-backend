@@ -64,8 +64,8 @@ def populate_test_posts():
 			user_id = '13',
 			pic_path = "posts/shoe" + str(i) + ".jpg",
 			)
-		newLike = Likes(like = True, post_id = i, user_id = '1234')
-		db.session.add(newLike)
+		# newLike = Likes(like = True, post_id = i, user_id = '1234')
+		# db.session.add(newLike)
 		db.session.add(newPost)
 	db.session.commit()
 
