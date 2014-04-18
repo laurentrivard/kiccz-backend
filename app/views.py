@@ -97,7 +97,7 @@ def returnJsonPostInfo(index):
 	jsondic = {}
 	posts = Posts.query.order_by(Posts.post_date.desc())
 	jsondic["posts"] = []
-	for (i,p) in enumerate(posts[((index-1)*19):]):
+	for (i,p) in enumerate(posts[((index-1)*19):,(index * 19)]):
 		likes = 0
 		pos = {}
 		pos['handle'] = p.handle
@@ -134,6 +134,7 @@ def get_m_releases():
 	return data	
 
 @app.route('/home')
+@app.route('/home/')
 @app.route('/home/<int:index>', methods = ['GET'])
 def get_posts(index = 1):
 	#posts = Posts.query.all()
