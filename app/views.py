@@ -72,7 +72,7 @@ def populate_test_posts():
 
 @app.route('/upload_post', methods= ['POST'])
 def get_image():
-	user_id = request.form['user_id']
+	handle = request.form['handle']
 	description = request.form['description']
 	post_date = datetime.now()
 	files = request.files.getlist("image_name")
@@ -93,14 +93,15 @@ def get_image():
 	resp.status_code = 200
 	return resp
 
-def returnJsonPostInfo():
+def returnJsonPostInfo(index):
 	jsondic = {}
 	posts = Posts.query.order_by(Posts.post_date.desc())
 	jsondic["posts"] = []
-	for p in posts:
+	for (i,p) in enumerate(posts[((index-1)*19):]):
+		print i
 		likes = 0
 		pos = {}
-		pos['user_id'] = p.user_id
+		pos['handle'] = p.handle
 		pos['description'] = p.description
 		pos['post_date'] = str(p.post_date)
 		pos['pic_path'] = p.pic_path
@@ -120,7 +121,7 @@ def like():
 	if not exists:	
 		newLike = Likes(like = True,
 					post_id = request.form['post_id'],
-					user_id = request.form['user_id'])
+					handle = request.form['handle'])
 		db.session.add(newVote) 
 		db.session.commit()	
 	resp = jsonify({"No like error": "Like added successfully"})
@@ -133,10 +134,11 @@ def get_m_releases():
 	data = returnJsonReleaseInfo()
 	return data	
 
-@app.route('/home', methods = ['GET'])
-def get_posts():
-	# posts = Posts.query.all()
-	posts = returnJsonPostInfo()
+@app.route('/home')
+@app.route('/home/<int:index>', methods = ['GET'])
+def get_posts(index = 1):
+	#posts = Posts.query.all()
+	posts = returnJsonPostInfo(index)
 	return posts
 
 @app.route('/home2', methods = ['GET'])

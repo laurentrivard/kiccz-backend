@@ -10,8 +10,6 @@ db = SQLAlchemy(app)
 
 from app import views, models
 
-
-
 if os.environ.get('HEROKU') is not None:
     import logging
     stream_handler = logging.StreamHandler()
