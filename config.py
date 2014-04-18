@@ -1,4 +1,5 @@
 import os
+import psycopg2
 import urlparse
 
 CSRF_ENABLED = True
@@ -7,12 +8,13 @@ POSTS_PER_PAGE = 20
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')
 
-#if os.environ.get('DATABASE_URL') is None:
-#    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')
-#else:
-#    SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
+if os.environ.get('DATABASE_URL') is None:
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')
+else:
+    SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
+
+basedir = os.path.abspath(os.path.dirname(__file__))
 
 SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
 

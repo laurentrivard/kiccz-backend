@@ -98,7 +98,6 @@ def returnJsonPostInfo(index):
 	posts = Posts.query.order_by(Posts.post_date.desc())
 	jsondic["posts"] = []
 	for (i,p) in enumerate(posts[((index-1)*19):]):
-		print i
 		likes = 0
 		pos = {}
 		pos['handle'] = p.handle
