@@ -1,0 +1,22 @@
+<html>
+  <head>
+    <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+
+
+
+    {% if title %}
+    <title>{{title}} - microblog</title>
+    {% else %}
+    <title>microblog</title>
+    {% endif %}
+  </head>
+  <body>
+    <div>
+      <a href="/releases">Releases</a>
+      <a href="/add_release">Add Release</a>
+      <a href="{ url_for('user', user_id = user.user_id)}">Your Profile</a>
+  </div>
+    <hr>
+    {% block content %}{% endblock %}
+  </body>
+</html>

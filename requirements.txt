@@ -1,0 +1,14 @@
+Babel==1.3
+Cython==0.19.1
+Flask==0.10.1
+Flask-Babel==0.8
+Flask-Login==0.2.10
+Flask-OpenID==1.2.1
+Flask-SQLAlchemy==1.0
+Flask-WTF==0.8.4
+Jinja2==2.7.1
+MarkupSafe==0.18
+SQLAlchemy==0.9.4
+gunicorn==18.0
+psycopg2==2.5.2
+sqlalchemy-migrate==0.9

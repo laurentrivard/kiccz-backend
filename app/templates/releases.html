@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+{% for release in releases %}
+	<p> {{release.brand}} ----> {{release.model}} --> ${{release.price}} <br>
+		{% for img in release.pictures.all() %}
+		<img src="{{url_for('static', filename= img.url)}}" height="70" width="100">
+		{% endfor %}
+
+{% endfor%}
+{% endblock %}
