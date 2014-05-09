@@ -14,7 +14,6 @@ class User(db.Model):
 	def __repr__(self):
 		return '<User %r>' % (self.handle)
 
-
 class Releases(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
 	brand = db.Column(db.String(64))
@@ -29,12 +28,13 @@ class Releases(db.Model):
 	release_folder = db.Column(db.String(512))
 	pictures = db.relationship('ReleasePictures', backref= 'release', lazy = 'dynamic')
 	votes = db.relationship('Votes', backref='votes', lazy='dynamic')
+	comments = db.relationship('Comments', backref='comments', lazy='dynamic')
 
 class Posts(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
 	post_date = db.Column(db.DateTime)
 	description = db.Column(db.String(512))
-	handle = db.Column(db.Integer, db.ForeignKey('user.handle'))
+	name = db.Column(db.String(64), db.ForeignKey('user.name'))
 	pic_path = db.Column(db.String(512))
 	likes = db.relationship('Likes', backref = 'likes', lazy='dynamic')
 
@@ -48,12 +48,18 @@ class Likes(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
 	like = db.Column(db.Boolean)
 	post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
-	handle = db.Column(db.Integer, db.ForeignKey('user.handle'))
+	name = db.Column(db.String(64), db.ForeignKey('user.name'))
 
 class ReleasePictures(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
 	url = db.Column(db.String(512))
 	release_id = db.Column(db.Integer, db.ForeignKey('releases.id'))
+
+class Comments(db.Model):
+	id = db.Column(db.Integer, primary_key = True)
+	comment_date = db.Column(db.DateTime)
+	body = db.Column(db.String(140))
+	release_id = db.Column(db.String(64), db.ForeignKey('releases.id'))
 
 
 

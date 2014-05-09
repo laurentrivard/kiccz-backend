@@ -41,6 +41,10 @@ def returnJsonReleaseInfo():
 		for p in r.pictures.all():
 			pics.append(p.url)
 		rel['pictures'] = pics
+		coms = []
+		for c in r.comments.all():
+			coms.append(c.body)
+		rel['comments'] = coms
 		cop, drop = 0, 0
 		for v in r.votes.all():
 			if v.vote:
@@ -97,10 +101,10 @@ def returnJsonPostInfo(index):
 	jsondic = {}
 	posts = Posts.query.order_by(Posts.post_date.desc())
 	jsondic["posts"] = []
-	for (i,p) in enumerate(posts[((index-1)*19):(index * 19)]):
+	for (i,p) in enumerate(posts[((index-1)*20):(index * 20)]):
 		likes = 0
 		pos = {}
-		pos['handle'] = p.handle
+		pos['name'] = p.name
 		pos['description'] = p.description
 		pos['post_date'] = str(p.post_date)
 		pos['pic_path'] = p.pic_path
@@ -111,6 +115,12 @@ def returnJsonPostInfo(index):
 	resp = jsonify(jsondic)
 	resp.status_code = 200
 	return resp	
+
+def returnJsonProfileInfo(user_id):
+	user = User.query.filter_by(id = user_id)
+	resp = jsonify(user)
+	resp.status_code = 200
+	return resp
 
 @app.route('/like_post', methods = ["POST"])
 def like():
@@ -131,7 +141,12 @@ def like():
 def get_m_releases():
 	# populate_test_posts()
 	data = returnJsonReleaseInfo()
-	return data	
+	return data
+
+@app.route('/profile/<int:user_id>')
+def get_profile_info(user_id = 0):
+	prof = returnJsonProfileInfo(user_id)
+	return prof		
 
 @app.route('/home')
 @app.route('/home/')
