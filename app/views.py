@@ -1,6 +1,6 @@
 from flask import render_template, request, flash, redirect, url_for, jsonify
 from app import app, db
-from models import User, Releases, Posts, Votes, ReleasePictures, Likes, ROLE_USER
+from models import User, Releases, Posts, Votes, ReleasePictures, Likes, ROLE_USER, Comments
 from forms import AddReleaseForm
 from config import UPLOAD_FOLDER, ALLOWED_EXTENSIONS
 from werkzeug import secure_filename
