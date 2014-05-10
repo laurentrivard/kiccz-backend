@@ -77,6 +77,7 @@ def populate_test_posts():
 @app.route('/upload_post', methods= ['POST'])
 def get_image():
 	handle = request.form['handle']
+	user_id = User.query.filter_by(handle = handle).first()
 	description = request.form['description']
 	post_date = datetime.now()
 	files = request.files.getlist("image_name")
@@ -90,7 +91,8 @@ def get_image():
 	newPost = Posts(post_date = post_date,
 					description = description,
 					handle = handle,
-					pic_path = path,)
+					user_id = user_id,
+					pic_path = path)
 	db.session.add(newPost)
 	db.session.commit()
 	resp = jsonify({})
