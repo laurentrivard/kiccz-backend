@@ -139,7 +139,6 @@ def like():
 
 @app.route('/m_releases')
 def get_m_releases():
-	# populate_test_posts()
 	data = returnJsonReleaseInfo()
 	return data
 
