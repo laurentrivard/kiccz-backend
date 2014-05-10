@@ -89,7 +89,7 @@ def get_image():
 	# mkdir_p(path)
 	newPost = Posts(post_date = post_date,
 					description = description,
-					user_id = user_id,
+					handle = handle,
 					pic_path = path,)
 	db.session.add(newPost)
 	db.session.commit()
