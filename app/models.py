@@ -34,7 +34,7 @@ class Posts(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
 	post_date = db.Column(db.DateTime)
 	description = db.Column(db.String(512))
-	name = db.Column(db.String(64), db.ForeignKey('user.name'))
+	handle = db.Column(db.String(64), db.ForeignKey('user.handle'))
 	pic_path = db.Column(db.String(512))
 	likes = db.relationship('Likes', backref = 'likes', lazy='dynamic')
 
@@ -48,7 +48,7 @@ class Likes(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
 	like = db.Column(db.Boolean)
 	post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
-	name = db.Column(db.String(64), db.ForeignKey('user.name'))
+	handle = db.Column(db.String(64), db.ForeignKey('user.handle'))
 
 class ReleasePictures(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
@@ -57,6 +57,7 @@ class ReleasePictures(db.Model):
 
 class Comments(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
+	handle = db.Column(db.String(64), db.ForeignKey('user.handle'))
 	comment_date = db.Column(db.DateTime)
 	body = db.Column(db.String(140))
 	release_id = db.Column(db.String(64), db.ForeignKey('releases.id'))

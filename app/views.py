@@ -104,7 +104,7 @@ def returnJsonPostInfo(index):
 	for (i,p) in enumerate(posts[((index-1)*20):(index * 20)]):
 		likes = 0
 		pos = {}
-		pos['name'] = p.name
+		pos['handle'] = p.handle
 		pos['description'] = p.description
 		pos['post_date'] = str(p.post_date)
 		pos['pic_path'] = p.pic_path
