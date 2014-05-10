@@ -91,7 +91,6 @@ def get_image():
 	newPost = Posts(post_date = post_date,
 					description = description,
 					handle = handle,
-					user_id = user_id,
 					pic_path = path)
 	db.session.add(newPost)
 	db.session.commit()
