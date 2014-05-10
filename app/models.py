@@ -60,7 +60,7 @@ class Comments(db.Model):
 	handle = db.Column(db.String(64), db.ForeignKey('user.handle'))
 	comment_date = db.Column(db.DateTime)
 	body = db.Column(db.String(140))
-	release_id = db.Column(db.Integer(64), db.ForeignKey('releases.id'))
+	release_id = db.Column(db.Integer, db.ForeignKey('releases.id'))
 
 
 
