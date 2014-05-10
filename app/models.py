@@ -35,7 +35,7 @@ class Posts(db.Model):
 	post_date = db.Column(db.DateTime)
 	description = db.Column(db.String(512))
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-	handle = db.Column(db.String(64), db.ForeignKey('user.handle'))
+	handle = db.Column(db.String(64))
 	pic_path = db.Column(db.String(512))
 	likes = db.relationship('Likes', backref = 'likes', lazy='dynamic')
 
