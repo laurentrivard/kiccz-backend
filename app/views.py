@@ -1,6 +1,6 @@
 from flask import render_template, request, flash, redirect, url_for, jsonify
 from app import app, db
-from models import User, Releases, Posts, Votes, ReleasePictures, Likes, ROLE_USER, Comments
+from models import User, Releases, Posts, Votes, ReleasePictures, Likes, ROLE_USER, Comments, Selling, Buying
 from forms import AddReleaseForm
 from config import UPLOAD_FOLDER, ALLOWED_EXTENSIONS
 from werkzeug import secure_filename
@@ -56,6 +56,35 @@ def returnJsonReleaseInfo():
 		print 'cop = ' + str(cop)
 		print 'drop = ' + str(drop)
 		jsondic["releases"].append(rel)
+	resp = jsonify(jsondic)
+	resp.status_code = 200
+	return resp
+
+def returnJsonSellingInfo():
+	jsondic = {}
+	sales = Selling.query.all()
+	jsondic["sales"] = []
+	for s in sales:
+		sell = {}
+		sell['brand'] = s.description
+		sell['email'] = s.email
+		sell['sale_date'] = s.sale_date
+		sell['price'] = s.price
+		sell['new'] = s.new
+		sell['size'] = s.size
+		sell['handle'] = s.handle
+		sell['sold'] = s.sold
+		cop, drop = 0, 0
+		for v in s.votes.all():
+			if v.vote:
+				cop +=1
+			else:
+				drop +=1
+		votes = {'cop': cop, 'drop': drop}
+		sell['votes'] = votes		
+		print 'cop = ' + str(cop)
+		print 'drop = ' + str(drop)
+		jsondic["sales"].append(sell)
 	resp = jsonify(jsondic)
 	resp.status_code = 200
 	return resp
@@ -143,6 +172,11 @@ def like():
 def get_m_releases():
 	data = returnJsonReleaseInfo()
 	return data
+
+@app.route('/sell', methods = ['GET'])
+def get_s_releases():
+	sale = returnJsonSellingInfo()
+	return sale
 
 @app.route('/profile/<int:user_id>')
 def get_profile_info(user_id = 0):

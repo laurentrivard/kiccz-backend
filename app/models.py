@@ -63,5 +63,25 @@ class Comments(db.Model):
 	body = db.Column(db.String(140))
 	release_id = db.Column(db.Integer, db.ForeignKey('releases.id'))
 
+class Selling(db.Model):
+	id = db.Column(db.Integer, primary_key = True)
+	description = db.Column(db.String(140))
+	sale_date = db.Column(db.DateTime)
+	price = db.Column(db.Float)
+	new = db.Column(db.Boolean)
+	email = db.Column(db.String(128))
+	size = db.Column(db.Float)
+	handle = db.Column(db.String, db.ForeignKey('user.handle'))
+	sold = db.Column(db.Boolean)
+
+class Buying(db.Model):
+	id = db.Column(db.Integer, primary_key = True)
+	brand = db.Column(db.String)
+	model = db.Column(db.String)
+	price = db.Column(db.Float)
+	size = db.Column(db.Float)
+	email = db.Column(db.String)
+	handle = db.Column(db.String, db.ForeignKey('user.handle'))
+
 
 
