@@ -8,18 +8,61 @@ import os, errno, random
  
 @app.route('/')
 @app.route('/index')
-
 def index():
-	return render_template("index.html",
-		title = "Kiccz")
+	return render_template("index.html", title = "Kiccz")
 
-@app.route('/releases')
-def get_releases():
-	#get all releases
-	releases = Releases.query.all()
-	return render_template("releases.html",
-		releases = releases)
+@app.route('/m_create_account', methods = ['GET', 'POST'])
+def m_create_account():
+	user_id = request.form['user_id']
+	name = request.form['name']
+	handle = request.form['handle']
+	user = User.query.filter_by(facebook_id = user_id).first()
+	handle_already_used = User.query.filter_by(handle = handle).first()
+	#handle already used, return error
+	if handle_already_used != None:
+		resp = jsonify({"error": "The handle you chose already exists. Please choose a different one."})
+		resp.status_code = 200
+		return resp
+	#create new user
+	if user == None:
+		user = User(facebook_id = user_id,
+					name = name,
+					handle = handle,
+					role = ROLE_USER)
+		db.session.add(user)
+		db.session.commit()
+	else:
+		m_login()	#should never be called
 
+	return_user = User.query.filter_by(facebook_id = user_id).first()
+	new_user = {}
+	new_user['user_id'] = return_user.id
+	new_user['handle'] = return_user.handle
+	new_user['name'] = return_user.name
+	new_user['role'] = return_user.role
+
+	resp = jsonify(new_user)
+	resp.status_code = 200
+	return resp
+
+@app.route('/m_login', methods = ['GET', 'POST'])
+def m_login():
+	user_id = request.form['user_id']
+	user = User.query.filter_by(facebook_id = user_id).first()
+	if user == None:
+		resp = jsonify({"account_exists": "no"})
+		resp.status_code = 200
+		return resp
+	else:
+	   #login the user and return his info
+	   new_user = {}
+	   new_user['user_id'] = user.id
+	   new_user['handle'] = user.handle
+	   new_user['name'] = user.name
+	   new_user['role'] = user.role
+	   resp = jsonify(new_user)
+	   resp.status_code = 200
+	   return resp
 
 def returnJsonReleaseInfo():
 	jsondic = {}
@@ -41,7 +84,7 @@ def returnJsonReleaseInfo():
 			pics.append(p.url)
 		rel['pictures'] = pics
 		coms = []
-		for c in r.comments.all():
+		for c in r.comments.limit(5).all():
 			coms.append(c.body)
 		rel['comments'] = coms
 		cop, drop = 0, 0
@@ -57,7 +100,13 @@ def returnJsonReleaseInfo():
 		jsondic["releases"].append(rel)
 	resp = jsonify(jsondic)
 	resp.status_code = 200
-	return resp
+	return resp	   
+
+@app.route('/releases')
+def get_releases():
+	#get all releases
+	releases = Releases.query.all()
+	return render_template("releases.html", releases = releases)
 
 def returnJsonSellingInfo():
 	jsondic = {}
@@ -92,6 +141,65 @@ def returnJsonBuyingInfo():
 		buy['handle'] = b.handle
 		jsondic["buys"].append(buy)
 	resp = jsonify(jsondic)
+	resp.status_code = 200
+	return resp
+
+def returnJsonPostInfo(index):
+	jsondic = {}
+	posts = Posts.query.order_by(Posts.post_date.desc())
+	jsondic["posts"] = []
+	for (i,p) in enumerate(posts[((index-1)*20):(index * 20)]):
+		likes = 0
+		pos = {}
+		pos['handle'] = p.handle
+		pos['description'] = p.description
+		pos['post_date'] = str(p.post_date)
+		pos['pic_path'] = p.pic_path
+		for l in p.likes.all():
+			likes += 1
+		pos['likes'] = likes
+		jsondic["posts"].append(pos)
+	resp = jsonify(jsondic)
+	resp.status_code = 200
+	return resp
+		
+def returnJsonProfileInfo(user_id,index):
+	userdic = {}
+	user = User.query.filter_by(id = user_id).first()
+	userdic['handle'] = user.handle
+	userdic['name'] = user.name
+	userdic['facebook_id'] = user.facebook_id
+	userdic['role'] = user.role
+	userdic['email'] = user.email
+	posts = user.posts.limit(index*20).all()
+	userdic["posts"] = []
+	for p in posts:
+		likes = 0
+		pos = {}
+		pos['handle'] = p.handle
+		pos['description'] = p.description
+		pos['post_date'] = str(p.post_date)
+		pos['pic_path'] = p.pic_path
+		for l in p.likes.all():
+			likes += 1
+		pos['likes'] = likes
+		userdic["posts"].append(pos)
+	resp = jsonify(userdic)
+	resp.status_code = 200
+	return resp
+
+def returnJsonCommentsInfo(release_id, index):
+	commentdic = {}
+	release = Releases.query.filter_by(id = release_id).first()
+	commentdic["comments"] = []
+	for c in release.comments.limit(index*25).all():
+		com = {}
+		com["handle"] = c.handle
+		com["comment_date"] = c.comment_date
+		com["body"] = c.body
+		com["release_id"] = c.release_id
+		commentdic["comments"].append(com)
+	resp = jsonify(commentdic)
 	resp.status_code = 200
 	return resp
 
@@ -142,6 +250,7 @@ def get_buy():
 def get_image():
 	handle = request.form['handle']
 	user_id = User.query.filter_by(handle = handle).first()
+	email = User.query.filter_by(handle = handle).first()
 	description = request.form['description']
 	post_date = datetime.now()
 	files = request.files.getlist("image_name")
@@ -155,36 +264,12 @@ def get_image():
 	newPost = Posts(post_date = post_date,
 					description = description,
 					handle = handle,
+					email = email,
 					user_id = user_id,
 					pic_path = path)
 	db.session.add(newPost)
 	db.session.commit()
 	resp = jsonify({})
-	resp.status_code = 200
-	return resp
-
-def returnJsonPostInfo(index):
-	jsondic = {}
-	posts = Posts.query.order_by(Posts.post_date.desc())
-	jsondic["posts"] = []
-	for (i,p) in enumerate(posts[((index-1)*20):(index * 20)]):
-		likes = 0
-		pos = {}
-		pos['handle'] = p.handle
-		pos['description'] = p.description
-		pos['post_date'] = str(p.post_date)
-		pos['pic_path'] = p.pic_path
-		for l in p.likes.all():
-			likes += 1
-		pos['likes'] = likes
-		jsondic["posts"].append(pos)
-	resp = jsonify(jsondic)
-	resp.status_code = 200
-	return resp	
-
-def returnJsonProfileInfo(user_id):
-	user = User.query.filter_by(id = user_id)
-	resp = jsonify(user)
 	resp.status_code = 200
 	return resp
 
@@ -203,10 +288,12 @@ def like():
 	resp.status_code = 200
 	return resp	
 
-@app.route('/m_releases')
-def get_m_releases():
-	data = returnJsonReleaseInfo()
-	return data
+@app.route('/home')
+@app.route('/home/')
+@app.route('/home/<int:index>', methods = ['GET'])
+def get_posts(index = 1):
+	posts = returnJsonPostInfo(index)
+	return posts	
 
 @app.route('/sell', methods = ['GET'])
 def get_s_releases():
@@ -218,18 +305,10 @@ def get_b_releases():
 	buy = returnJsonBuyingInfo()
 	return buy
 
-@app.route('/profile/<int:user_id>')
-def get_profile_info(user_id = 0):
-	prof = returnJsonProfileInfo(user_id)
-	return prof		
-
-@app.route('/home')
-@app.route('/home/')
-@app.route('/home/<int:index>', methods = ['GET'])
-def get_posts(index = 1):
-	posts = returnJsonPostInfo(index)
-	return posts
-
+@app.route('/profile/<int:user_id>/<int:index>')
+def get_profile_info(user_id = 0, index = 1):
+	prof = returnJsonProfileInfo(user_id,index)
+	return prof
 
 #helper to check if uploaded file should be accepted
 def allowed_file(filename):
@@ -244,6 +323,15 @@ def mkdir_p(path):
             pass
         else: raise
 
+@app.route('/m_releases')
+def get_m_releases():
+	data = returnJsonReleaseInfo()
+	return data
+
+@app.route('/m_releases/<int:release_id>/comments/<int:index>')
+def get_comments(release_id = 0, index = 1):
+	comments = returnJsonCommentsInfo(release_id, index)
+	return comments
 
 @app.route('/m_release_vote', methods = ["GET", "POST"])
 def vote():
@@ -349,55 +437,4 @@ def add_release():
 	return render_template('add_release.html',
 		form = addReleaseForm)	
 
-@app.route('/m_create_account', methods = ['GET', 'POST'])
-def m_create_account():
-	user_id = request.form['user_id']
-	name = request.form['name']
-	handle = request.form['handle']
-	user = User.query.filter_by(facebook_id = user_id).first()
-	handle_already_used = User.query.filter_by(handle = handle).first()
-	#handle already used, return error
-	if handle_already_used != None:
-		resp = jsonify({"error": "The handle you chose already exists. Please choose a different one."})
-		resp.status_code = 200
-		return resp
-	#create new user
-	if user == None:
-		user = User(facebook_id = user_id,
-					name = name,
-					handle = handle,
-					role = ROLE_USER)
-		db.session.add(user)
-		db.session.commit()
-	else:
-		m_login()	#should never be called
-
-	return_user = User.query.filter_by(facebook_id = user_id).first()
-	new_user = {}
-	new_user['user_id'] = return_user.id
-	new_user['handle'] = return_user.handle
-	new_user['name'] = return_user.name
-	new_user['role'] = return_user.role
-
-	resp = jsonify(new_user)
-	resp.status_code = 200
-	return resp
-
-@app.route('/m_login', methods = ['GET', 'POST'])
-def m_login():
-	user_id = request.form['user_id']
-	user = User.query.filter_by(facebook_id = user_id).first()
-	if user == None:
-		resp = jsonify({"account_exists": "no"})
-		resp.status_code = 200
-		return resp
-	else:
-	   #login the user and return his info
-	   new_user = {}
-	   new_user['user_id'] = user.id
-	   new_user['handle'] = user.handle
-	   new_user['name'] = user.name
-	   new_user['role'] = user.role
-	   resp = jsonify(new_user)
-	   resp.status_code = 200
-	   return resp	
+	

@@ -10,6 +10,7 @@ class User(db.Model):
 	name = db.Column(db.String(64))
 	facebook_id = db.Column(db.String(120), index = True, unique = True)
 	role = db.Column(db.SmallInteger, default = ROLE_USER)
+	email = db.Column(db.String(120))
 	posts = db.relationship('Posts', backref = 'author', lazy = 'dynamic')
 
 	@staticmethod
@@ -36,6 +37,21 @@ class User(db.Model):
 			version += 1
 		return new_facebood_id
 
+	@staticmethod
+	def populate_user_table(count):
+		for i in range(0,count):
+			newUser = User(handle = "chrissplinter" + str(i),
+				name = "chrissplinter",
+				facebook_id = "chrisfacebook" + str(i)
+			)
+			newHandle = newUser.make_unique_handle(newUser.handle)
+			newFbid = newUser.make_unique_fbid(newUser.facebook_id)
+			newUser = User(handle = newHandle,
+				name = "chrissplinter",
+				facebook_id = newFbid)
+			db.session.add(newUser)
+		db.session.commit()
+
 	def __repr__(self):
 		return '<User %r>' % (self.handle)
 
@@ -54,6 +70,25 @@ class Releases(db.Model):
 	pictures = db.relationship('ReleasePictures', backref= 'release', lazy = 'dynamic')
 	votes = db.relationship('Votes', backref='votes', lazy='dynamic')
 	comments = db.relationship('Comments', backref='comments', lazy='dynamic')
+
+	@staticmethod
+	def populate_releases_table(count):
+		for i in range(0,count):
+			newRelease = Releases(id = i, 
+				brand="Nike", 
+				model='test',
+				release_date=datetime.now(),
+				price=i,
+				resell_value=100,
+				color1="crim",
+				color2="morecrim",
+				text= "test",
+				date_added = datetime.now()
+				)
+			# newLike = Likes(like = True, post_id = i, user_id = '1234')
+			# db.session.add(newLike)
+			db.session.add(newRelease)
+		db.session.commit()
 
 class Posts(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
@@ -101,6 +136,17 @@ class Comments(db.Model):
 	comment_date = db.Column(db.DateTime)
 	body = db.Column(db.String(140))
 	release_id = db.Column(db.Integer, db.ForeignKey('releases.id'))
+
+	@staticmethod
+	def populate_comments_table(count):
+		for i in range(0,count):
+			newComment = Comments(handle = "chrissplinter" + str(i),
+				comment_date = datetime.now(),
+				body = "example comment " + str(i),
+				release_id = i
+			)
+			db.session.add(newComment)
+		db.session.commit()
 
 class Selling(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
