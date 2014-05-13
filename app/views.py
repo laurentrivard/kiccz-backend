@@ -66,7 +66,7 @@ def returnJsonSellingInfo():
 	jsondic["sales"] = []
 	for s in sales:
 		sell = {}
-		sell['brand'] = s.description
+		sell['description'] = s.description
 		sell['email'] = s.email
 		sell['sale_date'] = s.sale_date
 		sell['price'] = s.price
@@ -74,17 +74,24 @@ def returnJsonSellingInfo():
 		sell['size'] = s.size
 		sell['handle'] = s.handle
 		sell['sold'] = s.sold
-		cop, drop = 0, 0
-		for v in s.votes.all():
-			if v.vote:
-				cop +=1
-			else:
-				drop +=1
-		votes = {'cop': cop, 'drop': drop}
-		sell['votes'] = votes		
-		print 'cop = ' + str(cop)
-		print 'drop = ' + str(drop)
 		jsondic["sales"].append(sell)
+	resp = jsonify(jsondic)
+	resp.status_code = 200
+	return resp
+
+def returnJsonBuyingInfo():
+	jsondic = {}
+	buys = Buying.query.all()
+	jsondic["buys"] = []
+	for b in buys:
+		buy = {}
+		buy['brand'] = b.brand
+		buy['model'] = b.model
+		buy['price'] = b.price
+		buy['size'] = b.size
+		buy['email'] = b.email
+		buy['handle'] = b.handle
+		jsondic["buys"].append(buy)
 	resp = jsonify(jsondic)
 	resp.status_code = 200
 	return resp
@@ -102,6 +109,49 @@ def populate_test_posts():
 		# db.session.add(newLike)
 		db.session.add(newPost)
 	db.session.commit()
+
+@app.route('/upload_sale', methods= ['POST'])
+def get_sale():
+	description = request.form['description']
+	sale_date = datetime.now()
+	price = request.form['price']
+	new = request.form['new']
+	email = request.form['email']
+	size = request.form['size']
+	handle = request.form['handle']
+	newSale = Selling(description = description,
+					sale_date = sale_date,
+					price = price,
+					new = new,
+					email = email,
+					size = size,
+					handle = handle,
+					sold = False)
+	db.session.add(newSale)
+	db.session.commit()
+	resp = jsonify({})
+	resp.status_code = 200
+	return resp
+
+@app.route('/upload_buy', methods= ['POST'])
+def get_buy():
+	brand = request.form['brand']
+	model = request.form['model']
+	price = request.form['price']
+	size = request.form['size']
+	email = request.form['email']
+	handle =request.form['handle']
+	newBuy = Buying(brand = brand,
+					model = model,
+					price = price,
+					size = size,
+					email = email,
+					handle = handle)
+	db.session.add(newBuy)
+	db.session.commit()
+	resp = jsonify({})
+	resp.status_code = 200
+	return resp
 
 @app.route('/upload_post', methods= ['POST'])
 def get_image():
@@ -177,6 +227,11 @@ def get_m_releases():
 def get_s_releases():
 	sale = returnJsonSellingInfo()
 	return sale
+
+@app.route('/buy', methods = ['GET'])
+def get_b_releases():
+	buy = returnJsonBuyingInfo()
+	return buy
 
 @app.route('/profile/<int:user_id>')
 def get_profile_info(user_id = 0):

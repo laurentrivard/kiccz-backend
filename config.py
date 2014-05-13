@@ -1,5 +1,4 @@
 import os
-import psycopg2
 import urlparse
 
 CSRF_ENABLED = True
