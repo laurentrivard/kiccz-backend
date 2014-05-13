@@ -5,8 +5,7 @@ from forms import AddReleaseForm
 from config import UPLOAD_FOLDER, ALLOWED_EXTENSIONS
 from werkzeug import secure_filename
 import os, errno, random
-from datetime import datetime
-
+ 
 @app.route('/')
 @app.route('/index')
 
@@ -95,20 +94,6 @@ def returnJsonBuyingInfo():
 	resp = jsonify(jsondic)
 	resp.status_code = 200
 	return resp
-
-def populate_test_posts():
-	for i in range(0,6):
-		print "post" + str(i)
-		newPost = Posts( 
-			post_date=datetime.now(), 
-			description='test description',
-			user_id = '13',
-			pic_path = "posts/shoe" + str(i) + ".jpg",
-			)
-		# newLike = Likes(like = True, post_id = i, user_id = '1234')
-		# db.session.add(newLike)
-		db.session.add(newPost)
-	db.session.commit()
 
 @app.route('/upload_sale', methods= ['POST'])
 def get_sale():
@@ -242,28 +227,8 @@ def get_profile_info(user_id = 0):
 @app.route('/home/')
 @app.route('/home/<int:index>', methods = ['GET'])
 def get_posts(index = 1):
-	#posts = Posts.query.all()
 	posts = returnJsonPostInfo(index)
 	return posts
-
-@app.route('/home2', methods = ['GET'])
-def get_posts2():
-	for i in range(0,6):
-		newUser= User(handle = 'test' + str(i), name='test' + str(i), 
-				facebook_id = 'test' + str(i), 
-				role=ROLE_USER)
-		db.session.add(newUser)
-
-		newPost = Posts( post_date=datetime.now(), 
-					description='test description',
-					user_id = '1234',
-					pic_path = "posts/shoe" + str(i) + ".jpg",)
-		db.session.add(newPost)
-
-		newLike = Likes(like = True, post_id = i, user_id = '1234')
-		db.session.add(newLike)
-		
-	db.session.commit()
 
 
 #helper to check if uploaded file should be accepted
@@ -354,6 +319,12 @@ def add_release():
 							release_folder = release_folder,
 							text = addReleaseForm.text.data,
 							date_added = datetime.now())
+
+		newUser = User(name = "chris", handle = 'chrissplinter', facebook_id = "chrisfacebook")
+		newHandle = User.make_unique_handle(newUser.handle)
+		newFbid = User.make_unique_fbid(newUser.facebook_id)
+		newUser = User(name = "chris", handle = newHandle, facebook_id = newFbid)
+		db.session.add(newUser)
 		db.session.add(newRelease)
 		db.session.commit()
 		release_id = Releases.query.order_by(Releases.id.desc()).first()
