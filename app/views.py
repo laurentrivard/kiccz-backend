@@ -250,7 +250,7 @@ def get_buy():
 def get_image():
 	handle = request.form['handle']
 	user_id = User.query.filter_by(handle = handle).first()
-	email = User.query.filter_by(handle = handle).first()
+	email = request.form['handle']
 	description = request.form['description']
 	post_date = datetime.now()
 	files = request.files.getlist("image_name")
