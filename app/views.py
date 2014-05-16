@@ -264,7 +264,6 @@ def get_image():
 	newPost = Posts(post_date = post_date,
 					description = description,
 					handle = handle,
-					
 					user_id = user_id,
 					pic_path = path)
 	db.session.add(newPost)
@@ -374,7 +373,7 @@ def m_add_release():
 					text = request.form['text'],
 					date_added = datetime.now())
 	db.session.add(newRelease)
-	# db.session.commit()
+	db.session.commit()
 	#release_id = Releases.query.order_by(Releases.id.desc()).first()
 	#print request.files[]
 	#print request.form
