@@ -61,7 +61,7 @@ class Releases(db.Model):
 	model = db.Column(db.String(64))
 	release_date = db.Column(db.DateTime)
 	price = db.Column(db.Float)
-	resell_value = db.Column(db.Integer)
+	resell_value = db.Column(db.Float)
 	color1 = db.Column(db.String(64))
 	color2 = db.Column(db.String(64))
 	text = db.Column(db.String(512))
