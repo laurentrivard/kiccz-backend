@@ -5,7 +5,7 @@ from forms import AddReleaseForm
 from config import UPLOAD_FOLDER, ALLOWED_EXTENSIONS
 from werkzeug import secure_filename
 import os, errno, random
- 
+from datetime import datetime
 @app.route('/')
 @app.route('/index')
 def index():
@@ -374,7 +374,7 @@ def m_add_release():
 					text = request.form['text'],
 					date_added = datetime.now())
 	db.session.add(newRelease)
-	# db.session.commit()
+	db.session.commit()
 	#release_id = Releases.query.order_by(Releases.id.desc()).first()
 	#print request.files[]
 	#print request.form
