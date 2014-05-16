@@ -60,7 +60,7 @@ class Releases(db.Model):
 	brand = db.Column(db.String(64))
 	model = db.Column(db.String(64))
 	release_date = db.Column(db.DateTime)
-	price = db.Column(db.Integer)
+	price = db.Column(db.Float)
 	resell_value = db.Column(db.Integer)
 	color1 = db.Column(db.String(64))
 	color2 = db.Column(db.String(64))
