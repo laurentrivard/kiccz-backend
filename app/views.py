@@ -153,6 +153,7 @@ def returnJsonPostInfo(index):
 		pos = {}
 		pos['handle'] = p.handle
 		pos['description'] = p.description
+		pos['id'] = p.id
 		pos['post_date'] = str(p.post_date)
 		pos['pic_path'] = p.pic_path
 		for l in p.likes.all():
