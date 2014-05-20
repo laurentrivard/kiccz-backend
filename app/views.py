@@ -272,18 +272,34 @@ def get_image():
 	resp.status_code = 200
 	return resp
 
+
 @app.route('/like_post', methods = ["POST"])
 def like():
-	user_id = request.form['user_id']
-	release_id = request.form['release_id']
-	exists = Likes.query.filter_by(user_id = user_id, release_id = release_id).first()
+	handle = request.form['handle']
+	post_id = request.form['post_id']
+	exists = Likes.query.filter_by(handle = handle, post_id = post_id).first()
 	if not exists:	
 		newLike = Likes(like = True,
-					post_id = request.form['post_id'],
-					handle = request.form['handle'])
-		db.session.add(newVote) 
+					post_id = post_id,
+					handle = handle)
+		db.session.add(newLike) 
 		db.session.commit()	
 	resp = jsonify({"No like error": "Like added successfully"})
+	resp.status_code = 200
+	return resp
+
+@app.route('/dislike_post', methods = ["POST"])
+def dislike():
+	handle = request.form['handle']
+	post_id = request.form['post_id']
+	exists = disLikes.query.filter_by(handle = handle, post_id = post_id).first()
+	if not exists:	
+		newDislike = disLikes(dislike = True,
+					post_id = post_id,
+					handle = handle)
+		db.session.add(newDislike) 
+		db.session.commit()	
+	resp = jsonify({"No dislike error": "disLike added successfully"})
 	resp.status_code = 200
 	return resp	
 

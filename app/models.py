@@ -98,6 +98,7 @@ class Posts(db.Model):
 	handle = db.Column(db.String(64))
 	pic_path = db.Column(db.String(512))
 	likes = db.relationship('Likes', backref = 'likes', lazy='dynamic')
+	dislikes = db.relationship('disLikes', backref = 'disLikes', lazy='dynamic')
 
 	@staticmethod
 	def populate_posts_table(count):
@@ -122,6 +123,12 @@ class Votes(db.Model):
 class Likes(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
 	like = db.Column(db.Boolean)
+	post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
+	handle = db.Column(db.String(64), db.ForeignKey('user.handle'))
+
+class disLikes(db.Model):
+	id = db.Column(db.Integer, primary_key = True)
+	dislike = db.Column(db.Boolean)
 	post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
 	handle = db.Column(db.String(64), db.ForeignKey('user.handle'))
 
