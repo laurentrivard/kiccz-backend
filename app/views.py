@@ -150,6 +150,7 @@ def returnJsonPostInfo(index):
 	jsondic["posts"] = []
 	for (i,p) in enumerate(posts[((index-1)*20):(index * 20)]):
 		likes = 0
+		dislikes = 0
 		pos = {}
 		pos['handle'] = p.handle
 		pos['description'] = p.description
@@ -159,6 +160,9 @@ def returnJsonPostInfo(index):
 		for l in p.likes.all():
 			likes += 1
 		pos['likes'] = likes
+		for d in p.dislikes.all():
+			dislikes += 1
+		pos['dislikes'] = dislikes
 		jsondic["posts"].append(pos)
 	resp = jsonify(jsondic)
 	resp.status_code = 200
