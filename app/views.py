@@ -9,6 +9,7 @@ from datetime import datetime
 @app.route('/')
 @app.route('/index')
 def index():
+	populate_user_table(5)
 	return render_template("index.html", title = "Kiccz")
 
 @app.route('/m_create_account', methods = ['GET', 'POST'])

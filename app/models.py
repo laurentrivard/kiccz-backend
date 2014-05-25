@@ -64,6 +64,8 @@ class Releases(db.Model):
 	resell_value = db.Column(db.Float)
 	color1 = db.Column(db.String(64))
 	color2 = db.Column(db.String(64))
+	#gr = db.Column(db.Boolean())
+	#difficulty = db.Column(db.Integer)
 	text = db.Column(db.String(512))
 	date_added = db.Column(db.DateTime)
 	release_folder = db.Column(db.String(512))
