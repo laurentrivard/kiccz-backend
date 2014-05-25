@@ -280,7 +280,7 @@ def get_image():
 
 @app.route('/like_post', methods= ["POST"])
 def like():
-	handle = "laurentrivard"#request.form['handle']
+	handle = "chrissplinter1"#request.form['handle']
 	post_id = 1
 	#exists = Likes.query.filter_by(handle = handle, post_id = post_id).first()
 	#if not exists:	
