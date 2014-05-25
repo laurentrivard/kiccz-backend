@@ -1,6 +1,6 @@
 from flask import render_template, request, flash, redirect, url_for, jsonify
 from app import app, db
-from models import User, Releases, Posts, Votes, ReleasePictures, Likes, ROLE_USER, Comments, Selling, Buying
+from models import User, Releases, Posts, Votes, ReleasePictures, Likes, disLikes, ROLE_USER, Comments, Selling, Buying
 from forms import AddReleaseForm
 from config import UPLOAD_FOLDER, ALLOWED_EXTENSIONS
 from werkzeug import secure_filename
@@ -261,7 +261,6 @@ def get_image():
 		filename = secure_filename(name)
 		file.save(os.path.join(app.config['UPLOAD_FOLDER'], 'posts', filename))
 	path = os.path.join(UPLOAD_FOLDER, '/posts', filename)
-	# mkdir_p(path)
 	newPost = Posts(post_date = post_date,
 					description = description,
 					handle = handle,
@@ -274,17 +273,17 @@ def get_image():
 	return resp
 
 
-@app.route('/like_post', methods = ["POST"])
+@app.route('/like_post', methods= ["POST"])
 def like():
-	handle = request.form['handle']
-	post_id = request.form['post_id']
-	exists = Likes.query.filter_by(handle = handle, post_id = post_id).first()
-	if not exists:	
-		newLike = Likes(like = True,
-					post_id = post_id,
-					handle = handle)
-		db.session.add(newLike) 
-		db.session.commit()	
+	handle = "chris1"#request.form['handle']
+	post_id = 1
+	#exists = Likes.query.filter_by(handle = handle, post_id = post_id).first()
+	#if not exists:	
+	newLike = Likes(like = True,
+				post_id = post_id,
+				handle = handle)
+	db.session.add(newLike) 
+	db.session.commit()	
 	resp = jsonify({"No like error": "Like added successfully"})
 	resp.status_code = 200
 	return resp
