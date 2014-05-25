@@ -62,10 +62,8 @@ class Releases(db.Model):
 	release_date = db.Column(db.DateTime)
 	price = db.Column(db.Float)
 	resell_value = db.Column(db.Float)
-	color1 = db.Column(db.String(64))
-	color2 = db.Column(db.String(64))
-	#gr = db.Column(db.Boolean())
-	#difficulty = db.Column(db.Integer)
+	gr = db.Column(db.Boolean)
+	difficulty = db.Column(db.Integer)
 	text = db.Column(db.String(512))
 	date_added = db.Column(db.DateTime)
 	release_folder = db.Column(db.String(512))
@@ -82,8 +80,8 @@ class Releases(db.Model):
 				release_date=datetime.now(),
 				price=i,
 				resell_value=100,
-				color1="crim",
-				color2="morecrim",
+				gr=True,
+				difficulty=4,
 				text= "test",
 				date_added = datetime.now()
 				)
