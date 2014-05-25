@@ -402,6 +402,8 @@ def m_add_release():
 					)
 
 	db.session.add(newRelease)
+	db.session.commit()
+	
 	return_release = Releases.query.filter_by(date_added = date_added).first()
 
 	for file in files:
@@ -410,7 +412,7 @@ def m_add_release():
 		file.save(os.path.join(app.config['UPLOAD_FOLDER'], release_folder, filename))
 		path = os.path.join(UPLOAD_FOLDER, '/releases', filename)
 		newReleasePicture = ReleasePictures(url = path,
-			release_id =return_release.id
+			release_id = return_release.id
 			)
 
 	db.session.add(newReleasePicture)
