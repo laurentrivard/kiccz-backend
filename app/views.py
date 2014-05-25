@@ -79,8 +79,8 @@ def returnJsonReleaseInfo():
 		rel['release_date'] = str(r.release_date)
 		rel['price'] = r.price
 		rel['resell_value'] = r.resell_value
-		rel['color1'] = r.color1
-		rel['color2'] = r.color2
+		rel['gr'] = r.gr
+		rel['difficulty'] = r.difficulty
 		rel['text'] = r.text
 		rel['date_added'] = str(r.date_added)
 		pics = []
@@ -381,22 +381,39 @@ def vote():
 def m_add_release():
 	brand = request.form['brand']
 	model = request.form['model']
-	date = request.form['release_date']
+	release_date = request.form['release_date']
 	release_folder = 'releases/' + brand.replace(" ", "_") + "_" + model.replace(" ", "_") + "_" + datetime.now().strftime("%Y-%m-%d")
 	path = os.path.join(UPLOAD_FOLDER, release_folder)
 	mkdir_p(path)
-	print UPLOAD_FOLDER
+	date_added = datetime.now()
+	files = request.files.getlist("image_name")
+	filename = ''
+
 	newRelease = Releases(brand = brand,
 					model = model,
-					#release_date = date,
+					release_date = release_date,
 					price = request.form['price'],
 					resell_value = request.form['resell_value'],
-					color1 = request.form['color1'],
-					color2 = request.form['color2'],
+					gr = request.form['gr'],
+					difficulty = request.form['difficulty'],
 					release_folder = release_folder,
 					text = request.form['text'],
-					date_added = datetime.now())
+					date_added = date_added,
+					)
+
 	db.session.add(newRelease)
+	return_release = User.query.filter_by(date_added = date_added).first()
+
+	for file in files:
+		name = "%s" % str(handle) + "_" + datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+		filename = secure_filename(name)
+		file.save(os.path.join(app.config['UPLOAD_FOLDER'], release_folder, filename))
+		path = os.path.join(UPLOAD_FOLDER, '/releases', filename)
+		newReleasePicture = ReleasePictures(url = path,
+			release_id =return_release.id
+			)
+		
+	db.session.add(newReleasePicture)
 	db.session.commit()
 	#release_id = Releases.query.order_by(Releases.id.desc()).first()
 	#print request.files[]
@@ -425,17 +442,12 @@ def add_release():
 							release_date = date,
 							price = addReleaseForm.price.data,
 							resell_value = addReleaseForm.resell_value.data,
-							color1 = addReleaseForm.color1.data,
-							color2 = addReleaseForm.color2.data,
+							gr = addReleaseForm.gr.data,
+							difficulty = addReleaseForm.difficulty.data,
 							release_folder = release_folder,
 							text = addReleaseForm.text.data,
 							date_added = datetime.now())
 
-		newUser = User(name = "chris", handle = 'chrissplinter', facebook_id = "chrisfacebook")
-		newHandle = User.make_unique_handle(newUser.handle)
-		newFbid = User.make_unique_fbid(newUser.facebook_id)
-		newUser = User(name = "chris", handle = newHandle, facebook_id = newFbid)
-		db.session.add(newUser)
 		db.session.add(newRelease)
 		db.session.commit()
 		release_id = Releases.query.order_by(Releases.id.desc()).first()
