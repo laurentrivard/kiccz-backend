@@ -283,15 +283,15 @@ def get_image():
 
 @app.route('/like_post', methods= ["POST"])
 def like():
-	handle = "chrissplinter1"#request.form['handle']
-	post_id = 1
-	#exists = Likes.query.filter_by(handle = handle, post_id = post_id).first()
-	#if not exists:	
-	newLike = Likes(like = True,
-				post_id = post_id,
-				handle = handle)
-	db.session.add(newLike) 
-	db.session.commit()	
+	handle = request.form['handle']
+	post_id = request.form['post_id']
+	exists = Likes.query.filter_by(handle = handle, post_id = post_id).first()
+	if not exists:	
+		newLike = Likes(like = True,
+					post_id = post_id,
+					handle = handle)
+		db.session.add(newLike) 
+		db.session.commit()	
 	resp = jsonify({"No like error": "Like added successfully"})
 	resp.status_code = 200
 	return resp
