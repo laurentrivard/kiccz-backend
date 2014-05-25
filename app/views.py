@@ -17,6 +17,7 @@ def m_create_account():
 	user_id = request.form['user_id']
 	name = request.form['name']
 	handle = request.form['handle']
+	email = request.form['email']
 	user = User.query.filter_by(facebook_id = user_id).first()
 	handle_already_used = User.query.filter_by(handle = handle).first()
 	#handle already used, return error
@@ -29,6 +30,7 @@ def m_create_account():
 		user = User(facebook_id = user_id,
 					name = name,
 					handle = handle,
+					email = email,
 					role = ROLE_USER)
 		db.session.add(user)
 		db.session.commit()
@@ -41,6 +43,7 @@ def m_create_account():
 	new_user['handle'] = return_user.handle
 	new_user['name'] = return_user.name
 	new_user['role'] = return_user.role
+	new_user['email'] = return_user.email
 
 	resp = jsonify(new_user)
 	resp.status_code = 200
