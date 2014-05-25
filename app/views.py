@@ -405,7 +405,7 @@ def m_add_release():
 	return_release = Releases.query.filter_by(date_added = date_added).first()
 
 	for file in files:
-		name = "%s" % str(handle) + "_" + datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+		name = release_folder
 		filename = secure_filename(name)
 		file.save(os.path.join(app.config['UPLOAD_FOLDER'], release_folder, filename))
 		path = os.path.join(UPLOAD_FOLDER, '/releases', filename)
