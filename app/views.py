@@ -402,7 +402,7 @@ def m_add_release():
 					)
 
 	db.session.add(newRelease)
-	return_release = User.query.filter_by(date_added = date_added).first()
+	return_release = Releases.query.filter_by(date_added = date_added).first()
 
 	for file in files:
 		name = "%s" % str(handle) + "_" + datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -412,7 +412,7 @@ def m_add_release():
 		newReleasePicture = ReleasePictures(url = path,
 			release_id =return_release.id
 			)
-		
+
 	db.session.add(newReleasePicture)
 	db.session.commit()
 	#release_id = Releases.query.order_by(Releases.id.desc()).first()
