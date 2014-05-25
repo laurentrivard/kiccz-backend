@@ -403,7 +403,7 @@ def m_add_release():
 
 	db.session.add(newRelease)
 	db.session.commit()
-	
+
 	return_release = Releases.query.filter_by(date_added = date_added).first()
 
 	for file in files:
@@ -422,7 +422,7 @@ def m_add_release():
 	#print request.form
 
 
-	resp = jsonify({"error": "maybe"})
+	resp = jsonify({"Release added successfully"})
 	resp.status_code = 200
 	return resp
 
