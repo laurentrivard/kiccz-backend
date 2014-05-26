@@ -6,6 +6,8 @@ from config import UPLOAD_FOLDER, ALLOWED_EXTENSIONS
 from werkzeug import secure_filename
 import os, errno, random
 from datetime import datetime
+import time
+from time import mktime
 @app.route('/')
 @app.route('/index')
 def index():
@@ -381,7 +383,9 @@ def vote():
 def m_add_release():
 	brand = request.form['brand']
 	model = request.form['model']
-	release_date = request.form['release_date']
+	print '---------------' + str(request.form['release_date'])
+	release_date = time.strptime(request.form['release_date'], '%d-%m-%Y')
+	dt = datetime.fromtimestamp(mktime(release_date))
 	release_folder = 'releases/' + brand.replace(" ", "_") + "_" + model.replace(" ", "_") + "_" + datetime.now().strftime("%Y-%m-%d")
 	path = os.path.join(UPLOAD_FOLDER, release_folder)
 	mkdir_p(path)
@@ -391,7 +395,7 @@ def m_add_release():
 
 	newRelease = Releases(brand = brand,
 					model = model,
-					release_date = release_date,
+					release_date = dt,
 					price = request.form['price'],
 					resell_value = request.form['resell_value'],
 					gr = request.form['gr'],
@@ -407,6 +411,7 @@ def m_add_release():
 	return_release = Releases.query.filter_by(date_added = date_added).first()
 
 	for file in files:
+		print 'first file'
 		name = release_folder
 		filename = secure_filename(name)
 		file.save(os.path.join(app.config['UPLOAD_FOLDER'], release_folder, filename))
